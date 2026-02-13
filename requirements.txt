@@ -1,6 +1,7 @@
-﻿opencv-python
+opencv-python
 numpy
 pandas
 scikit-learn
 pypdf
 pyinstaller
+pytest

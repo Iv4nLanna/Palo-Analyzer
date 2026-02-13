@@ -1,109 +1,115 @@
-﻿# Analyzer Palo
+# Palo Analyzer
 
-Sistema em Python para analise automatizada do Teste Palografico usando visao computacional classica (OpenCV), com suporte a ajustes manuais, regras psicometricas e opcao de assistencia por ML.
+[![CI](https://github.com/Iv4nLanna/Palo-Analyzer/actions/workflows/ci.yml/badge.svg)](https://github.com/Iv4nLanna/Palo-Analyzer/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-## Principais recursos
-- Correcao de perspectiva da folha (homografia) e recorte de ROI.
-- Binarizacao adaptativa e deteccao/classificacao de palos.
-- Extracao automatica de metricas: total, linhas, NOR, inclinacao, margens, espacamentos, pressao estimada, organizacao.
-- Regras psicometricas implementadas em codigo com saida estruturada.
-- Fluxo hibrido: dados manuais tem prioridade sobre leitura automatica.
-- Interface desktop para usuarios leigos (`desktop_app.py`).
-- Pipeline de treino/benchmark para ML supervisionado (opcional).
+Desktop + CLI system in Python to automate **Palographic Test** analysis using classical Computer Vision, auditable business rules, and optional ML assistance.
 
-## Estrutura do projeto
+## Why this project matters
+- Reduces manual correction effort with a reproducible pipeline.
+- Keeps analysis auditable (rule IDs and structured outputs in JSON).
+- Uses a hybrid strategy: **manual input has priority** over automatic extraction for safety and practical reliability.
+
+## Technical Highlights
+- Perspective correction (homography) and ROI cropping.
+- Adaptive binarization and morphology-based stroke detection.
+- Stroke grouping into lines and extraction of geometric features.
+- Rule engine for psychometric dimensions (productivity, rhythm/NOR, spacing, margins, inclination, organization, etc.).
+- Optional ML fusion modes (`assist`, `hybrid`, `override`) for classification support.
+- Desktop app for non-technical users (`desktop_app.py`).
+
+## Validation Snapshot
+Based on local benchmark artifacts (`output/benchmark_real_examples.json`) generated from real examples + controlled augmentations:
+- Samples: `35`
+- Mean accuracy by mode:
+  - `rules`: `1.0000`
+  - `ml_assist`: `1.0000`
+  - `ml_hybrid`: `0.9893`
+  - `ml_override`: `0.9571`
+- Best mode in this run: `rules`
+
+Important: this specific benchmark is pseudo-labeled and evaluates internal consistency, not full clinical validity.
+
+## Project Structure
 ```text
-Analyzer Palo/
-  main.py                         # CLI principal (processa imagem)
-  desktop_app.py                  # App desktop (Tkinter)
-  config.py                       # Parametros de deteccao/pipeline
+Palo-Analyzer/
+  main.py                         # CLI entrypoint
+  desktop_app.py                  # Desktop UI (Tkinter)
+  config.py                       # Pipeline and detection parameters
   src/
-    pipeline.py                   # Pipeline CV + metricas
-    preprocessor.py               # Homografia/ROI/binarizacao
-    detector.py                   # Deteccao de palos e linhas
-    scorer.py                     # Regras e classificacoes
-    ml_models.py                  # Treino/predicao/fusao ML
-    build_ml_dataset.py           # Gera dataset de features
-    train_ml_models.py            # Treina modelos ML
-    benchmark_accuracy.py         # Benchmark rules x ML
-    run_full_process_examples.py  # Fluxo end-to-end com exemplos reais
-  input/                          # Templates e entradas manuais
-  output/                         # Artefatos e relatorios gerados
+    pipeline.py                   # CV pipeline + metric extraction
+    preprocessor.py               # Homography / ROI / binarization
+    detector.py                   # Stroke detection and line grouping
+    scorer.py                     # Rule engine and interpretations
+    ml_models.py                  # ML training/prediction/fusion
+    build_ml_dataset.py           # Build feature dataset
+    train_ml_models.py            # Train ML models
+    benchmark_accuracy.py         # Compare rules vs ML modes
+    run_full_process_examples.py  # End-to-end local run with real examples
+  tests/                          # Automated tests
 ```
 
-## Requisitos
-- Python 3.10+
-- Windows (desktop app e empacotamento testados em Windows)
-
-## Instalacao
+## Installation
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## Uso rapido (CLI)
+## Quick Start
+### CLI
 ```powershell
-python main.py --image "C:\caminho\folha.jpg" --output-dir output
+python main.py --image "C:\path\to\sheet.jpg" --output-dir output
 ```
 
-Opcional (ML e margem espelhada):
+With ML and mirrored margin swap:
 ```powershell
-python main.py --image "C:\caminho\folha.jpg" --ml-model "output\ml_models_real_examples.pkl" --ml-mode hybrid --ml-threshold 0.75 --swap-lr-margins
+python main.py --image "C:\path\to\sheet.jpg" --ml-model "output\ml_models_real_examples.pkl" --ml-mode hybrid --ml-threshold 0.75 --swap-lr-margins
 ```
 
-## Uso desktop
+### Desktop
 ```powershell
 python desktop_app.py
 ```
 
-No app:
-1. Anexe imagem (opcional).
-2. Preencha campos manuais (se desejar sobrescrever).
-3. Clique em **Gerar Analise Completa**.
+## Main Outputs
+- `output/resultado.json` (CLI automatic flow)
+- `output/analise_completa.json` (desktop hybrid flow)
+- `output/overlay.jpg`, `output/aligned.jpg`, `output/roi.jpg`, `output/binary.jpg`
+- `output/contagem_por_linha.csv`
 
-## Saidas geradas
-Por padrao em `output/`:
-- `resultado.json` (pipeline automatico CLI)
-- `analise_completa.json` (desktop/hibrido)
-- `overlay.jpg`, `aligned.jpg`, `roi.jpg`, `binary.jpg`
-- `contagem_por_linha.csv`
-
-## Pipeline de ML (opcional)
-1. Gerar dataset:
+## ML Workflow (Optional)
 ```powershell
 python src/build_ml_dataset.py --input input/ml_labels_template.csv --output output/ml_dataset.csv
-```
-
-2. Treinar modelos:
-```powershell
 python src/train_ml_models.py --dataset output/ml_dataset.csv --model output/ml_models.pkl --report output/ml_train_report.json
-```
-
-3. Benchmark:
-```powershell
 python src/benchmark_accuracy.py --labels input/ml_labels_template.csv --ml-model output/ml_models.pkl --output output/benchmark_report.json
 ```
 
-4. Fluxo end-to-end com exemplos reais locais:
+End-to-end automated local process:
 ```powershell
 python src/run_full_process_examples.py
 ```
 
-## Empacotar para outra pessoa (Windows)
+## Testing and CI
+Run local tests:
+```powershell
+pytest -q
+```
+
+CI is configured with GitHub Actions in `.github/workflows/ci.yml`.
+
+## Packaging for Windows
 ```powershell
 python -m pip install pyinstaller
 python -m PyInstaller --noconfirm --windowed --name "AnalyzerPalo" --add-data "input;input" --add-data "output;output" desktop_app.py
 ```
-Executavel em: `dist/AnalyzerPalo/AnalyzerPalo.exe`
 
-## Limitacoes importantes
-- Resultado psicometrico depende da qualidade da imagem, calibracao e aderencia ao protocolo de aplicacao.
-- Modelos ML atuais sao auxiliares; priorize validacao humana.
-- Benchmark com pseudo-rotulos mede consistencia interna, nao validade clinica.
+Generated app:
+`dist/AnalyzerPalo/AnalyzerPalo.exe`
 
-## Etica e uso responsavel
-Este software e de apoio tecnico. A interpretacao psicologica final deve ser revisada por profissional habilitado.
+## Responsible Use
+This project is a technical decision-support tool. Final psychological interpretation should be reviewed by a qualified professional.
 
-## Autor
+## Author
 Ivan Lana
