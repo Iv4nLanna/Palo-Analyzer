@@ -1,0 +1,36 @@
+﻿# config.py
+
+TARGET_WIDTH = 1240
+TARGET_HEIGHT = 1754
+
+# ROI (fracoes relativas apos homografia): x1, y1, x2, y2
+# Ajustar para cobrir apenas a area dos palos.
+ROI_X1 = 0.03
+ROI_Y1 = 0.14
+ROI_X2 = 0.98
+ROI_Y2 = 0.72
+
+# Binarizacao
+ADAPTIVE_BLOCK_SIZE = 31
+ADAPTIVE_C = 12
+CLAHE_CLIP_LIMIT = 2.0
+CLAHE_GRID_SIZE = (8, 8)
+
+# Deteccao de palo
+MIN_AREA = 18
+MAX_AREA = 1400
+MIN_HEIGHT = 10
+MAX_WIDTH = 16
+MIN_ASPECT_RATIO = 1.6
+VERTICAL_KERNEL_HEIGHT = 5
+HORIZONTAL_LINE_KERNEL_WIDTH = 45
+
+# Agrupamento em linhas
+LINE_TOLERANCE_Y = 18
+MIN_PALOS_PER_LINE = 8
+
+# Score base (substituir conforme regra oficial consolidada)
+DEFAULT_TIME_PER_BLOCK_SECONDS = 60
+DEFAULT_BLOCK_SIZE_LINES = 5
+DEFAULT_ERROR_PENALTY = 1.0
+DEFAULT_VARIABILITY_PENALTY_FACTOR = 0.05

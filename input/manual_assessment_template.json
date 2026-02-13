@@ -1,0 +1,20 @@
+﻿{
+  "total_palos": 460,
+  "nor": 2.6,
+  "block_totals": [91, 90, 84, 91, 94],
+  "avg_spacing_mm": 3.0,
+  "avg_height_mm": 7.0,
+  "line_spacing_mm": 4.0,
+  "line_direction_angle_deg": 0.5,
+  "stroke_inclination_angle_deg": 90.0,
+  "margin_left_mm": 6.0,
+  "margin_right_mm": 4.0,
+  "margin_top_mm": 5.0,
+  "pressure_level": "media",
+  "stroke_quality_level": "reta",
+  "organization_level": "boa",
+  "irregularities": ["tremor inicial", "gancho superior direito"],
+  "order_pattern": "ordenados",
+  "reasoning_level": "normal_ou_superior",
+  "error_count": 0
+}
