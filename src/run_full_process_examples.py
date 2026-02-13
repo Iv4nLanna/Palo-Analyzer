@@ -1,4 +1,4 @@
-import csv
+﻿import csv
 import json
 import sys
 from dataclasses import dataclass
@@ -30,21 +30,28 @@ class ExampleResult:
 
 
 def find_real_images() -> List[Path]:
-    preferred = [
-        Path(r"C:\Users\Ivan\Downloads\7aa30a5c-f71b-499e-ac5a-914d9f3f6e4f.jpg"),
-        Path(r"C:\Users\Ivan\Downloads\41315360-2456-453a-8292-09fdfaa4c0e0.jpg"),
-        Path(r"C:\Users\Ivan\Downloads\99f07814-ffca-4b7e-b4a2-c7dbbc842f6d.jpg"),
-        Path(r"C:\Users\Ivan\Downloads\09ded9d2-febc-42f4-aeaa-e2f2adf4446a.jpeg"),
-        Path(r"C:\Users\Ivan\Downloads\69676982-c132-47ff-84bb-625332e0b16c.jpeg"),
-    ]
-    existing = [p for p in preferred if p.exists()]
-    if existing:
-        return existing
+    """
+    Busca imagens de exemplo sem caminhos hardcoded de usuario.
+    Ordem de preferencia:
+    1) input/examples/*
+    2) Downloads local (fallback)
+    """
+    examples_dir = ROOT / "input" / "examples"
+    candidates: List[Path] = []
+
+    if examples_dir.exists():
+        for ext in ("*.jpg", "*.jpeg", "*.png"):
+            candidates.extend(examples_dir.glob(ext))
+
+    if candidates:
+        return sorted(candidates, key=lambda p: p.stat().st_mtime, reverse=True)[:5]
 
     fallback: List[Path] = []
     downloads = Path.home() / "Downloads"
-    for ext in ("*.jpg", "*.jpeg", "*.png"):
-        fallback.extend(downloads.glob(ext))
+    if downloads.exists():
+        for ext in ("*.jpg", "*.jpeg", "*.png"):
+            fallback.extend(downloads.glob(ext))
+
     return sorted(fallback, key=lambda p: p.stat().st_mtime, reverse=True)[:5]
 
 
@@ -244,7 +251,7 @@ def write_markdown_report(path: Path, base_images: List[Path], summary_rows: Lis
     lines.extend(
         [
             "",
-            "## Resumo da execução",
+            "## Resumo da execuÃ§Ã£o",
             f"- Amostras processadas (inclui variacoes): {len(summary_rows)}",
             f"- Total de palos (min/med/max): {min(totals)}/{int(np.median(totals))}/{max(totals)}",
             f"- Linhas detectadas (min/med/max): {min(linhas)}/{int(np.median(linhas))}/{max(linhas)}",
@@ -305,3 +312,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

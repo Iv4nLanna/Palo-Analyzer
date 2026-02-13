@@ -30,3 +30,8 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Sensitive generated labels
+input/ml_labels_real_examples_bootstrap.csv
+input/examples/
+

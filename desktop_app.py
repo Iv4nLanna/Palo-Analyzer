@@ -16,7 +16,7 @@ def _is_blank(value: str) -> bool:
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Palografico - Ivan Lana ❤ Mariana")
+        self.title("Palo Analyzer")
         self.geometry("1240x840")
         self.minsize(1100, 760)
 
@@ -29,7 +29,7 @@ class App(tk.Tk):
         self.ml_mode_var = tk.StringVar(value="assist")
         self.ml_threshold_var = tk.StringVar(value="0.75")
         self.swap_lr_margins_var = tk.BooleanVar(value=False)
-        self.status_var = tk.StringVar(value="Preencha os campos e clique em 'Gerar Analise Completa'.")
+        self.status_var = tk.StringVar(value="Preencha os campos e clique em 'Gerar Analise'.")
 
         # Manual inputs (manual > automatic)
         self.m_total = tk.StringVar()
@@ -69,12 +69,12 @@ class App(tk.Tk):
         except Exception:
             pass
 
-        # Tema romantico leve e discreto (sem afetar usabilidade).
-        self.configure(bg="#fff7fb")
-        style.configure("TFrame", background="#fff7fb")
-        style.configure("TLabelframe", background="#fff7fb")
-        style.configure("TLabelframe.Label", background="#fff7fb", foreground="#b11863", font=("Segoe UI", 10, "bold"))
-        style.configure("TLabel", background="#fff7fb")
+        # Tema neutro para uso profissional.
+        self.configure(bg="#f7f8fa")
+        style.configure("TFrame", background="#f7f8fa")
+        style.configure("TLabelframe", background="#f7f8fa")
+        style.configure("TLabelframe.Label", background="#f7f8fa", foreground="#1f2937", font=("Segoe UI", 10, "bold"))
+        style.configure("TLabel", background="#f7f8fa")
 
         root = ttk.Frame(self, padding=12)
         root.pack(fill="both", expand=True)
@@ -83,20 +83,14 @@ class App(tk.Tk):
         header.pack(fill="x", pady=(0, 8))
         ttk.Label(
             header,
-            text="❤ Analise Palografica Completa ❤",
+            text="Analise Palografica Completa",
             font=("Segoe UI", 16, "bold"),
-            foreground="#d81b60",
+            foreground="#1f2937",
         ).pack(anchor="w")
         ttk.Label(
             header,
             text="Fluxo hibrido: imagem opcional + ajustes manuais (manual sempre prevalece)",
-            foreground="#7b1f52",
-        ).pack(anchor="w")
-        ttk.Label(
-            header,
-            text="Feito com carinho por Ivan Lana para Mariana ❤",
-            foreground="#c2185b",
-            font=("Segoe UI", 10, "italic"),
+            foreground="#4b5563",
         ).pack(anchor="w", pady=(2, 0))
 
         main = ttk.Panedwindow(root, orient="horizontal")
@@ -113,13 +107,7 @@ class App(tk.Tk):
         footer = ttk.Frame(root)
         footer.pack(fill="x", pady=(8, 0))
         ttk.Label(footer, textvariable=self.status_var, anchor="w").pack(fill="x")
-        ttk.Label(
-            footer,
-            text="Ivan Lana ❤ Mariana",
-            anchor="e",
-            foreground="#d81b60",
-            font=("Segoe UI", 9, "bold"),
-        ).pack(fill="x", pady=(4, 0))
+        ttk.Label(footer, text="Palo Analyzer", anchor="e", foreground="#4b5563", font=("Segoe UI", 9)).pack(fill="x", pady=(4, 0))
 
     def _build_left_panel(self, parent):
         source_box = ttk.LabelFrame(parent, text="Fonte de dados")
@@ -269,7 +257,7 @@ class App(tk.Tk):
 
         action_row = ttk.Frame(parent)
         action_row.pack(fill="x", pady=(8, 0))
-        ttk.Button(action_row, text="❤ Gerar Analise Completa", command=self.run_hybrid_assessment).pack(side="left")
+        ttk.Button(action_row, text="Gerar Analise", command=self.run_hybrid_assessment).pack(side="left")
         ttk.Button(action_row, text="Limpar Campos", command=self.clear_manual_fields).pack(side="left", padx=8)
         ttk.Button(action_row, text="Abrir Pasta", command=self.open_output_dir).pack(side="left")
 
